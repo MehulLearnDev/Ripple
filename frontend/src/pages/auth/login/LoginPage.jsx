@@ -6,8 +6,7 @@ import XSvg from "../../../components/svgs/X";
 import { MdOutlineMail } from "react-icons/md";
 import { MdPassword } from "react-icons/md";
 
-import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -15,8 +14,15 @@ const LoginPage = () => {
     password: "",
   });
 
-  const {mutate: loginMutation, isPending, isError, error} = useMutation({
-    mutationFn: async({username, password}) => {
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: loginMutation,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: async ({ username, password }) => {
       try {
         const res = await fetch("/api/auth/login", {
           method: "POST",
@@ -24,20 +30,21 @@ const LoginPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ username, password }),
-        })
+        });
 
         const data = await res.json();
 
         if (!res.ok) {
-          throw new Error(data.error || "Something went wrong")
+          throw new Error(data.error || "Something went wrong");
         }
       } catch (error) {
-        throw new Error(error)
+        throw new Error(error);
       }
     },
     onSuccess: () => {
-      toast.success("Login Successful")
-    }
+      // refetch the authUser
+      queryClient.invalidateQueries({queryKey: ["authUser"]});
+    },
   });
 
   const handleSubmit = (e) => {
@@ -82,7 +89,7 @@ const LoginPage = () => {
             />
           </label>
           <button className="btn rounded-full btn-primary text-white">
-            {isPending ? "Loading..." : "Login" }
+            {isPending ? "Loading..." : "Login"}
           </button>
           {isError && <p className="text-red-500">{error.message}</p>}
         </form>
