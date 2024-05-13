@@ -129,5 +129,3 @@ const SignUpPage = () => {
   );
 };
 export default SignUpPage;
-
-// 3: 41: 22
