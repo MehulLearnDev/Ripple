@@ -43,5 +43,3 @@ const HomePage = () => {
 	);
 };
 export default HomePage;
-
-// 3:7:22
