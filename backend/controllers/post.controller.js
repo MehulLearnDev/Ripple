@@ -111,11 +111,11 @@ export const likeUnlikePost = async (req, res) => {
       const updatedLikes = post.likes.filter((id) => id.toString() !== userId.toString())
 
       // Delete existing notification if exists
-      await Notification.deleteOne({
-        from: userId,
-        to: post.user,
-        type: "like",
-      });
+      // await Notification.deleteOne({
+      //   from: userId,
+      //   to: post.user,
+      //   type: "like",
+      // });
 
       res.status(200).json(updatedLikes);
     } else {
